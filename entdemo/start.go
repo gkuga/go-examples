@@ -6,8 +6,10 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"entdemo/ent"
+	"entdemo/ent/car"
 	"entdemo/ent/user"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -31,9 +33,9 @@ func main() {
 		if err := client.Schema.Create(ctx); err != nil {
 			log.Fatalf("failed creating schema resources: %v", err)
 		}
-	case "create":
+	case "create-user":
 		if len(os.Args) < 4 {
-			log.Fatalf("go run start.go create <user name> <age>")
+			log.Fatalf("go run start.go create-user <user name> <age>")
 		}
 		log.Printf("create user: %s", os.Args[2])
 		age, err := strconv.Atoi(os.Args[3])
@@ -43,9 +45,9 @@ func main() {
 		if _, err = CreateUser(ctx, client, os.Args[2], age); err != nil {
 			log.Fatalln(err)
 		}
-	case "query":
+	case "query-user":
 		if len(os.Args) < 3 {
-			log.Fatalf("go run start.go query <user name>")
+			log.Fatalf("go run start.go query-user <user name>")
 		}
 		log.Printf("query user: %s", os.Args[2])
 		if _, err = QueryUser(ctx, client, os.Args[2]); err != nil {
@@ -60,9 +62,9 @@ func main() {
 		for _, user := range users {
 			log.Printf("%v %v %v", user.ID, user.Name, user.Age)
 		}
-	case "delete":
+	case "delete-user":
 		if len(os.Args) < 3 {
-			log.Fatalf("go run start.go delete <user id>")
+			log.Fatalf("go run start.go delete-user <user id>")
 		}
 		id, err := strconv.Atoi(os.Args[2])
 		if err != nil {
@@ -117,4 +119,40 @@ func DeleteUser(ctx context.Context, client *ent.Client, id int) error {
 		return fmt.Errorf("failed delete user %w", err)
 	}
 	return nil
+}
+
+func CreateCar(ctx context.Context, client *ent.Client, model string) (*ent.Car, error) {
+	// Create a new car with model "Tesla".
+	car, err := client.Car.
+		Create().
+		SetModel(model).
+		SetRegisteredAt(time.Now()).
+		Save(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed creating car: %w", err)
+	}
+	return car, nil
+}
+
+func QueryCar(ctx context.Context, client *ent.Client, model string) (*ent.Car, error) {
+	car, err := client.Car.
+		Query().
+		Where(car.Model(model)).
+		// `Only` fails if no user found,
+		// or more than 1 user returned.
+		Only(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed querying car: %w", err)
+	}
+	return car, nil
+}
+
+func QueryAllCar(ctx context.Context, client *ent.Client) ([]*ent.Car, error) {
+	cars, err := client.Car.
+		Query().
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed querying car: %w", err)
+	}
+	return cars, nil
 }

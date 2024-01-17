@@ -1,11 +1,12 @@
 package schema
 
 import (
-  "regexp"
+	"regexp"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
+
 // Group holds the schema definition for the Group entity.
 type Group struct {
 	ent.Schema
