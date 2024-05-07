@@ -17,8 +17,8 @@ func closeChan(ch chan int, sec *int) {
 
 func mainDeadLock1() {
 	ch := make(chan int, 2)
-  ch <- 1
-  ch <- 2
+	ch <- 1
+	ch <- 2
 	for v := range ch {
 		fmt.Println(v)
 	}
@@ -26,8 +26,8 @@ func mainDeadLock1() {
 
 func mainDeadLock2() {
 	ch := make(chan int, 2)
-  ch <- 1
-  ch <- 2
+	ch <- 1
+	ch <- 2
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
@@ -41,8 +41,8 @@ func mainDeadLock2() {
 
 func mainNotDeadLock1() {
 	ch := make(chan int, 2)
-  ch <- 1
-  ch <- 2
+	ch <- 1
+	ch <- 2
 	go closeChan(ch, nil)
 	for v := range ch {
 		fmt.Println(v)
@@ -80,8 +80,58 @@ func selectChan() {
 	}
 }
 
+func tickChannel() {
+	ch := make(chan time.Time)
+	go func() {
+		for t := range time.Tick(time.Second) {
+			ch <- t
+		}
+	}()
+	go func() {
+		for t := range ch {
+			fmt.Println("受信:", t)
+		}
+	}()
+	select {}
+}
+
+func afterChannel() {
+	ch := make(chan bool)
+	go func() {
+		for {
+			ch <- true
+			time.Sleep(time.Second)
+		}
+	}()
+	go func() {
+		for {
+			<-ch
+			fmt.Println("受信:", time.Now())
+		}
+	}()
+	select {}
+}
+
+func emptySelectDeadLock1() {
+	select {}
+}
+
+// select{}でgoroutineはasleepステータスに移行する？
+func emptySelectDeadLock2() {
+	go func() {
+		select {}
+	}()
+	select {}
+}
+
+func emptySelectNotDeadLock() {
+	go func() {
+		for {
+		}
+	}()
+	select {}
+}
+
 func main() {
-	selectChan()
-	// mainDeadLock1()
-	// mainDeadLock2()
+	emptySelectDeadLock2()
 }
