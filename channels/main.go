@@ -49,7 +49,18 @@ func mainNotDeadLock1() {
 	}
 }
 
-func bufferdChan() {
+func bufferdChan1DeadLoock() {
+	ch := make(chan int, 1)
+	ch <- 1
+	ch <- 2
+	ch <- 3
+	close(ch)
+	fmt.Println("cap:", cap(ch), "len:", len(ch))
+	<-ch
+	fmt.Println("cap:", cap(ch), "len:", len(ch))
+}
+
+func bufferdChan1NotDeadLoock() {
 	ch := make(chan int, 10)
 	ch <- 1
 	ch <- 2
@@ -58,6 +69,77 @@ func bufferdChan() {
 	fmt.Println("cap:", cap(ch), "len:", len(ch))
 	<-ch
 	fmt.Println("cap:", cap(ch), "len:", len(ch))
+}
+
+func unbufferdChan1() {
+	ch := make(chan int)
+	go func() { ch <- 1 }()
+	var v = <-ch
+	fmt.Println(v)
+	go func() { ch <- 1 }()
+	v = <-ch
+	fmt.Println(v)
+}
+
+func unbufferdChan2_1() {
+	ch := make(chan int)
+	ch <- 1
+  sec := 1
+	go closeChan(ch, &sec)
+	for v := range ch {
+		fmt.Println(v)
+	}
+}
+
+func unbufferdChan2_2() {
+	ch := make(chan int)
+	go func(){ch <- 1}()
+  sec := 1
+	go closeChan(ch, &sec)
+	for v := range ch {
+		fmt.Println(v)
+	}
+}
+
+func unbufferdChan3() {
+	ch := make(chan int)
+	go func() {
+		for {
+			ch <- 1
+			ch <- 2
+			ch <- 3
+			time.Sleep(time.Second * 3)
+		}
+	}()
+	for range time.Tick(time.Second) {
+		select {
+		case data := <-ch:
+			fmt.Println("受信:", data)
+		}
+	}
+}
+
+func bufferdChan2() {
+	ch := make(chan int, 10)
+	go func() {
+		for i := 0; ; i++ {
+			select {
+			case ch <- i:
+				fmt.Println("送信:", i)
+			default:
+				fmt.Println("バッファが溢れました")
+			}
+			time.Sleep(time.Millisecond * 100)
+		}
+	}()
+	for range time.Tick(time.Second) {
+		select {
+		case data := <-ch:
+			fmt.Println("受信:", data)
+		default:
+			fmt.Println("データを受け取りませんでした")
+		}
+	}
 }
 
 func selectChan() {
@@ -133,5 +215,6 @@ func emptySelectNotDeadLock() {
 }
 
 func main() {
-	emptySelectDeadLock2()
+	unbufferdChan2_2()
+	time.Sleep(time.Second * 3)
 }
