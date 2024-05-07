@@ -84,7 +84,7 @@ func unbufferdChan1() {
 func unbufferdChan2_1() {
 	ch := make(chan int)
 	ch <- 1
-  sec := 1
+	sec := 1
 	go closeChan(ch, &sec)
 	for v := range ch {
 		fmt.Println(v)
@@ -93,8 +93,8 @@ func unbufferdChan2_1() {
 
 func unbufferdChan2_2() {
 	ch := make(chan int)
-	go func(){ch <- 1}()
-  sec := 1
+	go func() { ch <- 1 }()
+	sec := 1
 	go closeChan(ch, &sec)
 	for v := range ch {
 		fmt.Println(v)
@@ -111,11 +111,12 @@ func unbufferdChan3() {
 			time.Sleep(time.Second * 3)
 		}
 	}()
-	for range time.Tick(time.Second) {
+	for v := range time.Tick(time.Second) {
 		select {
 		case data := <-ch:
 			fmt.Println("受信:", data)
 		}
+		fmt.Println(v)
 	}
 }
 
@@ -138,6 +139,33 @@ func bufferdChan2() {
 			fmt.Println("受信:", data)
 		default:
 			fmt.Println("データを受け取りませんでした")
+		}
+	}
+}
+
+func bufferdChan3() {
+	ch := make(chan int, 10)
+  ticker := time.NewTicker(time.Second)
+	go func() {
+		for i := 0; ; i++ {
+			select {
+			case ch <- i:
+				fmt.Println("送信:", i)
+			default:
+				fmt.Println("バッファが溢れました")
+			}
+			time.Sleep(time.Millisecond * 100)
+		}
+	}()
+	for {
+		select {
+		// case t := <- time.Tick(time.Second):
+    // この書き方だと毎回新しいタイマーチャネルが生成されるので他のチャネルの方が
+    // 先に受信するならば永遠に実行されない。
+		case t := <- ticker.C:
+			fmt.Println(t)
+		case data := <-ch:
+			fmt.Println("受信:", data)
 		}
 	}
 }
@@ -215,6 +243,6 @@ func emptySelectNotDeadLock() {
 }
 
 func main() {
-	unbufferdChan2_2()
+	bufferdChan3()
 	time.Sleep(time.Second * 3)
 }
