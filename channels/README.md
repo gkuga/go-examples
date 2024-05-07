@@ -1,3 +1,4 @@
 - [goroutine、channelの扱い方](https://christina04.hatenablog.com/entry/2016/06/22/022240)
 - [終了したことを他の複数のゴルーチンに伝えるのにチャネルのcloseを使う #golang](https://qiita.com/tenntenn/items/dd6041d630af7feeec52)
 - [Go の channel 処理パターン集](https://hori-ryota.com/blog/golang-channel-pattern/)
+- [Goで並行処理(基本編)](https://zenn.dev/hsaki/books/golang-concurrency/viewer/basicusage)
