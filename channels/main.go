@@ -145,7 +145,7 @@ func bufferdChan2() {
 
 func bufferdChan3() {
 	ch := make(chan int, 10)
-  ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(time.Second)
 	go func() {
 		for i := 0; ; i++ {
 			select {
@@ -160,10 +160,11 @@ func bufferdChan3() {
 	for {
 		select {
 		// case t := <- time.Tick(time.Second):
-    // この書き方だと毎回新しいタイマーチャネルが生成されるので他のチャネルの方が
-    // 先に受信するならば永遠に実行されない。
-		case t := <- ticker.C:
-			fmt.Println(t)
+		// この書き方だと毎回新しいタイマーチャネルが生成されるので他のチャネルの方が
+		// 先に受信するならば永遠に実行されない。
+		case t := <-ticker.C:
+			data := <-ch
+			fmt.Println(t, data)
 		case data := <-ch:
 			fmt.Println("受信:", data)
 		}
