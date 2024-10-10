@@ -1,1 +1,2 @@
 - [Go1.23のイテレータを使って実装された `slices` パッケージの `Chunk` 関数 の使い所を考えてみる](https://zenn.dev/canary_techblog/articles/2a08dd2187a3d8)
+- [Go1.23のイテレータを動かして学ぶ](https://zenn.dev/team_soda/articles/understanding-iterators-in-go)

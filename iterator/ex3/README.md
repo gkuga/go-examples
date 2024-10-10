@@ -1,0 +1,1 @@
+- [Iterator in Go](https://refactoring.guru/design-patterns/iterator/go/example)
