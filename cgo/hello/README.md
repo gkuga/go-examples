@@ -1,0 +1,3 @@
+- [cmd/cgo](https://pkg.go.dev/cmd/cgo)
+- [cgo is not Go](https://dave.cheney.net/2016/01/18/cgo-is-not-go)
+- [どうしてもcgoから逃げられなくなったあなたに知ってほしいcgoの使い方入門](https://gocon.jp/2023/sessions/B7-L/)
