@@ -1,20 +1,21 @@
+- [errgroup](https://pkg.go.dev/golang.org/x/sync/errgroup)
+
+```mermaid
+
 graph TD
-    A[Main Context (ctx)] --> B[ErrGroup + Derived Context (group, ctx)]
-    B --> C[Task 1]
-    B --> D[Task 2 (Error)]
-    B --> E[Task 3 (Cancelled)]
-    D --> F[Error Propagation]
-    F --> G[Group Wait]
-    E --> G
-    C --> G
+    T1_STEP1["Task 1"]
+    T2_STEP1["Task 2"]
+    T3_STEP1["Task 3"]
+    T1_STEP2["Task 1 (Finished)"]
+    T2_STEP2["Task 2 (Error)"]
+    T3_STEP2["Task 3 (Cancelled)"]
+    E_STEP1["ErrGroup"]
+    E_STEP2["Group Wait"]
+    E_STEP3["Error Propagation"]
 
-    subgraph "Error Handling Flow"
-        D --> F
-    end
-
-    subgraph "Group Wait"
-        F --> G
-        E --> G
-        C --> G
-    end
-
+    M["Main Context"]
+    M --> E_STEP1
+    E_STEP1 --> T1_STEP1 --> E_STEP2 --> T1_STEP2
+    E_STEP1 --> T2_STEP1 --> E_STEP2 --> T2_STEP2 --> E_STEP3 --> T3_STEP2
+    E_STEP1 --> T3_STEP1 --> E_STEP2
+```
