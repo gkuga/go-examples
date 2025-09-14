@@ -50,7 +50,7 @@ func add(done Done, intStream Stream, additive int) Stream {
 	return addedStream
 }
 
-func main() {
+func multiplySample() {
 	// This is just a placeholder main function.
 	done := make(chan interface{})
 	defer close(done)
@@ -61,13 +61,13 @@ func main() {
 	for result := range pipeline {
 		fmt.Println(result)
 	}
+}
 
-	done2 := make(chan interface{})
-	defer close(done2)
-
-	intStream = generator(done2, nums...)
-	orDonePipeline := multiplyOrDone(done2, add(done2, multiplyOrDone(done2, intStream, 2), 1), 2)
-	for result := range orDonePipeline {
-		fmt.Println(result)
-	}
+func main() {
+	multiplySample()
+	orDoneSample()
+	bridgeSample()
+	teeSample()
+	takeSample()
+	repeatSample()
 }
