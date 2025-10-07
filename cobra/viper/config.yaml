@@ -1,0 +1,31 @@
+# Sample configuration file for viper example
+app:
+  name: "Viper Example App"
+  version: "1.0.0"
+  debug: true
+
+server:
+  host: "localhost"
+  port: 8080
+  timeout: 30
+
+database:
+  driver: "postgresql"
+  host: "localhost"
+  port: 5432
+  name: "myapp"
+  user: "admin"
+  password: "secret123"
+  ssl_mode: "disable"
+
+logging:
+  level: "info"
+  file: "app.log"
+  max_size: 100
+  max_backups: 3
+  max_age: 28
+
+features:
+  enable_metrics: true
+  enable_tracing: false
+  max_connections: 100
