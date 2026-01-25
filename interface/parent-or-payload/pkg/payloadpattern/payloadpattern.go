@@ -19,3 +19,9 @@ type TypeBPayload struct {
 	Payload
 	DetailB int
 }
+
+type GenericsPayload[T Payload] struct {
+	Date    time.Time
+	Type    string
+	Payload T
+}

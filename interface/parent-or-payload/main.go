@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	// Using Parent Pattern
+	fmt.Println("--- Using Parent Pattern ---")
 	handleParentPatternPacket(&parentpattern.TypeAPacket{
 		Packet: parentpattern.NewPacket(
 			time.Now(),
@@ -26,7 +26,28 @@ func main() {
 		DetailB: 42,
 	})
 
-	// Using Payload Pattern
+	fmt.Println("--- Using Parent Pattern with Generics ---")
+	handleParentPatternGenericsPacket(parentpattern.GenericsPacket[*parentpattern.TypeAPacket]{
+		Packet: &parentpattern.TypeAPacket{
+			Packet: parentpattern.NewPacket(
+				time.Now(),
+				"TypeA",
+			),
+			DetailA: "Example Detail A in Generics",
+		},
+	})
+
+	handleParentPatternGenericsPacket(parentpattern.GenericsPacket[*parentpattern.TypeBPacket]{
+		Packet: &parentpattern.TypeBPacket{
+			Packet: parentpattern.NewPacket(
+				time.Now(),
+				"TypeB",
+			),
+			DetailB: 84,
+		},
+	})
+
+	fmt.Println("--- Using Payload Pattern ---")
 	handlePayloadPatternPacket(payloadpattern.Packet{
 		Date: time.Now(),
 		Type: "TypeA",
@@ -40,6 +61,23 @@ func main() {
 		Type: "TypeB",
 		Payload: &payloadpattern.TypeBPayload{
 			DetailB: 42,
+		},
+	})
+
+	fmt.Println("--- Using Payload Pattern with Generics ---")
+	handlePayloadPatternGenericsPacket(payloadpattern.GenericsPayload[*payloadpattern.TypeAPayload]{
+		Date: time.Now(),
+		Type: "TypeA",
+		Payload: &payloadpattern.TypeAPayload{
+			DetailA: "Example Detail A in Generics",
+		},
+	})
+
+	handlePayloadPatternGenericsPacket(payloadpattern.GenericsPayload[*payloadpattern.TypeBPayload]{
+		Date: time.Now(),
+		Type: "TypeB",
+		Payload: &payloadpattern.TypeBPayload{
+			DetailB: 84,
 		},
 	})
 }
@@ -56,6 +94,10 @@ func handleParentPatternPacket(p parentpattern.Packet) {
 	}
 }
 
+func handleParentPatternGenericsPacket[T parentpattern.Packet](p parentpattern.GenericsPacket[T]) {
+	fmt.Printf("Generics Packet Date: %s, Type: %s\n", p.Packet.Date(), p.Packet.Type())
+}
+
 func handlePayloadPatternPacket(p payloadpattern.Packet) {
 	fmt.Printf("Packet Date: %s, Type: %s\n", p.Date, p.Type)
 	switch payload := p.Payload.(type) {
@@ -66,4 +108,8 @@ func handlePayloadPatternPacket(p payloadpattern.Packet) {
 	default:
 		fmt.Println("Unknown payload type")
 	}
+}
+
+func handlePayloadPatternGenericsPacket[T payloadpattern.Payload](p payloadpattern.GenericsPayload[T]) {
+	fmt.Printf("Generics Payload Date: %s, Type: %s\n", p.Date, p.Type)
 }

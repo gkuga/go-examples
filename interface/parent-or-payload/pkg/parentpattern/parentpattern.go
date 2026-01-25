@@ -36,3 +36,7 @@ type TypeBPacket struct {
 	Packet
 	DetailB int
 }
+
+type GenericsPacket[T Packet] struct {
+	Packet T
+}
