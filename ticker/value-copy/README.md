@@ -1,0 +1,1 @@
+This code will result in an error, but if you uncomment the lines `// var err error` and `fmt.Printf("%p\n", &err)`, the error will not occur. I can't understand why.
